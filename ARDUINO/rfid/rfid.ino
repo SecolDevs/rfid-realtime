@@ -7,8 +7,8 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); //Creamos el objeto para el RC522
 byte lectUID[4];
 byte user1[4] = {0x93, 0xE2, 0x8E, 0x1A};
 
-int ledR = 5;
-int ledG = 6;
+int ledR = 6;
+int ledG = 5;
 int ledB = 7;
 
 int buzz = 4;
@@ -24,6 +24,10 @@ void setup() {
 }
 
 void loop() {
+
+  digitalWrite( ledG, HIGH);
+  digitalWrite( ledR, HIGH);
+  
   if ( ! mfrc522.PICC_IsNewCardPresent())   // si no hay una tarjeta presente
     return;           // retorna al loop esperando por una tarjeta
 
@@ -44,8 +48,10 @@ void loop() {
   Serial.print("\n");         // imprime un espacio de tabulacion
   String desc = Serial.readString();
   if (desc == "true") {
+    
     parpadearLed(ledG, 2, 100);
   } else {
+  
     parpadearLed(ledR, 2, 300);
   }
   mfrc522.PICC_HaltA();     // detiene comunicacion con tarjeta

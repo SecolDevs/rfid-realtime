@@ -6,7 +6,7 @@ const serialPort = require('serialport')
 const personaSocket = require('./controller/personaSocket')
 
 // Serial Port
-const port = new serialPort('COM6', { baudRate: 9600 })
+const port = new serialPort('COM3', { baudRate: 9600 })
 const parser = new serialPort.parsers.Readline()
 port.pipe(parser)
 
@@ -14,6 +14,7 @@ port.pipe(parser)
 conectarDb()
 // Levantar Server
 const server = require('http').Server(app)
+
 // Escuchar eventos con socket io
 const io = require('socket.io')(server, {
   cors: {
@@ -44,7 +45,7 @@ io.on('connection', (socket) => {
 parser.on('data', async (line) => {
   let res = await personaSocket.findTag(line.trim())
   console.log(line)
-  console.log('object')
+  console.log(res)
   if (res) {
     port.write('true')
     io.emit('succesCard', res)
