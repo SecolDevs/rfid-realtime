@@ -1,10 +1,29 @@
 const Asistencia = require('../models/Asistencia')
 
+findId = async (id) => {
+  try {
+    const asistencia = await Asistencia.findById(id).populate('persona').exec()
+    return asistencia
+  } catch (err) {
+    return false
+  }
+}
+
 module.exports = {
+  findData: async (data) => {
+    try {
+      const asistencia = await Asistencia.find(data).exec()
+      if (Object.keys(asistencia).length > 0) return asistencia[0]
+      else return false
+    } catch (err) {
+      return false
+    }
+  },
   create: async (data) => {
     try {
-      const asistencia = new Asistencia(data)
-      asistencia.save()
+      let asistencia = new Asistencia(data)
+      await asistencia.save()
+      asistencia = findId(asistencia._id)
       return asistencia
     } catch (err) {
       return { msg: `Error ${err}` }
@@ -12,10 +31,12 @@ module.exports = {
   },
   update: async (data) => {
     try {
-      const asistencia = Asistencia.findByIdAndUpdate(
+      let asistencia = await Asistencia.findOneAndUpdate(
         { _id: data._id },
-        { $set: data }
+        data,
+        { new: true }
       )
+      asistencia = findId(asistencia._id)
       return asistencia
     } catch (err) {
       return { msg: `Error ${err}` }

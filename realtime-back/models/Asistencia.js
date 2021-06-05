@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 
 const AsistenciaSchema = mongoose.Schema({
-  tag: {
-    type: String,
-    required: true,
-  },
   fechaEntrada: {
     type: Date,
     default: Date.now(),
@@ -16,6 +12,10 @@ const AsistenciaSchema = mongoose.Schema({
   estado: {
     type: String,
     default: '0',
+  },
+  persona: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Persona',
   },
 })
 

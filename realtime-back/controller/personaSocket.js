@@ -4,7 +4,7 @@ module.exports = {
   findTag: async (tag) => {
     try {
       const persona = await Persona.find({ tag }).exec()
-      if (Object.keys(persona).length > 0) return persona
+      if (Object.keys(persona).length > 0) return persona[0]
       else return false
     } catch (err) {
       return false

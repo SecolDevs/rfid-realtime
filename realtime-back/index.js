@@ -4,11 +4,14 @@ const conectarDb = require('./config/db')
 const app = express()
 const serialPort = require('serialport')
 const personaSocket = require('./controller/personaSocket')
+const asistenciaSocket = require('./controller/asistenciaSocket')
 
 // Serial Port
-const port = new serialPort('COM3', { baudRate: 9600 })
+const port = new serialPort('COM5', { baudRate: 9600 })
 const parser = new serialPort.parsers.Readline()
 port.pipe(parser)
+
+const informacion = false
 
 // Conectar DB
 conectarDb()
@@ -34,26 +37,68 @@ app.get('/', (res) => {
 
 // rutas
 app.use('/persona', require('./routes/personas'))
+app.use('/asistencia', require('./routes/asistencias'))
 
 // socket
-let conSocket = null
-io.on('connection', (socket) => {
-  console.log('Alguien se ha conectado con Sockets', socket.id)
-  conSocket = socket
-})
+if (informacion) {
+  let conSocket = null
+  io.on('connection', (socket) => {
+    console.log('Alguien se ha conectado con Sockets', socket.id)
+    conSocket = socket
+  })
 
-parser.on('data', async (line) => {
-  let res = await personaSocket.findTag(line.trim())
-  console.log(line)
-  console.log(res)
-  if (res) {
-    port.write('true')
-    io.emit('succesCard', res)
-  } else {
-    port.write('false')
-    io.emit('badCard')
-  }
-})
+  parser.on('data', async (line) => {
+    line = line.trim()
+    let res = await personaSocket.findTag(line.trim())
+    console.log(line)
+    console.log(res)
+    if (res) {
+      port.write('true')
+      io.emit('successInfoCard', res)
+    } else {
+      port.write('false')
+      io.emit('badCard')
+    }
+  })
+  //
+  // ASISTENCIAS
+} else {
+  let conSocket = null
+  io.on('connection', (socket) => {
+    console.log('Alguien se ha conectado con Sockets', socket.id)
+    conSocket = socket
+  })
+
+  parser.on('data', async (line) => {
+    line = line.trim()
+    let res = await personaSocket.findTag(line.trim())
+    if (res) {
+      port.write('true')
+      let asis = await asistenciaSocket.findData({
+        persona: res._id,
+        estado: '1',
+      })
+      if (asis) {
+        let asistencia = await asistenciaSocket.update({
+          _id: asis._id,
+          estado: '0',
+          fechaSalida: Date.now(),
+        })
+        io.emit('updatedAsistencia', asistencia)
+      } else {
+        let asistencia = await asistenciaSocket.create({
+          persona: res._id,
+          estado: '1',
+          fechaSalida: null,
+        })
+        io.emit('createdAsistencia', asistencia)
+      }
+    } else {
+      port.write('false')
+      io.emit('badCard')
+    }
+  })
+}
 
 // Server
 server.listen(PORT, () => {
