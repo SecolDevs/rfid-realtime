@@ -1,6 +1,7 @@
 const localhost = 'http://localhost/'
-const local = 'http://192.168.0.100/'
+const localYordi = 'http://192.168.0.100/'
+const localC = 'http://0.0.0.0/'
 
-const url = local
+const url = localYordi
 
 export default url
