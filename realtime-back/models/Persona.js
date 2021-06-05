@@ -5,7 +5,22 @@ const PersonaSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  documento: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   nombre: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  telefono: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
     type: String,
     required: true,
     trim: true,
@@ -14,10 +29,6 @@ const PersonaSchema = mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
   },
 })
 

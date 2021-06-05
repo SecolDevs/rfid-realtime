@@ -1,0 +1,18 @@
+.img-card {
+  width: 100%;
+  height: 30vh;
+  object-fit: contain;
+  transition: 0.2s;
+}
+
+.active {
+  background-color: #f7f7f7;
+  color: black;
+  transition: 0.2s;
+}
+
+.active .img-card {
+  transform: rotate(10deg);
+
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
