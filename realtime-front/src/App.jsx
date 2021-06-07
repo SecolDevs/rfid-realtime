@@ -1,13 +1,16 @@
-import React from 'react'
-import AsistenciaState from './context/AsistenciaState'
-import Root from './Root'
+import React from "react";
+import { socket, SocketContext } from "./config/SocketConfig";
+import AsistenciaState from "./context/AsistenciaState";
+import Root from "./Root";
 
 const App = () => {
   return (
-    <AsistenciaState>
-      <Root />
-    </AsistenciaState>
-  )
-}
+    <SocketContext.Provider value={socket}>
+      <AsistenciaState>
+        <Root />
+      </AsistenciaState>
+    </SocketContext.Provider>
+  );
+};
 
-export default App
+export default App;

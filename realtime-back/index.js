@@ -7,7 +7,7 @@ const personaSocket = require('./controller/personaSocket')
 const asistenciaSocket = require('./controller/asistenciaSocket')
 
 // Serial Port
-const port = new serialPort('COM5', { baudRate: 9600 })
+const port = new serialPort('COM3', { baudRate: 9600 })
 const parser = new serialPort.parsers.Readline()
 port.pipe(parser)
 
@@ -49,9 +49,9 @@ if (informacion) {
 
   parser.on('data', async (line) => {
     line = line.trim()
-    let res = await personaSocket.findTag(line.trim())
+    let res = await personaSocket.findTag(line)
     console.log(line)
-    console.log(res)
+
     if (res) {
       port.write('true')
       io.emit('successInfoCard', res)
@@ -70,8 +70,11 @@ if (informacion) {
   })
 
   parser.on('data', async (line) => {
+
+
     line = line.trim()
     let res = await personaSocket.findTag(line.trim())
+
     if (res) {
       port.write('true')
       let asis = await asistenciaSocket.findData({
@@ -87,11 +90,12 @@ if (informacion) {
         io.emit('updatedAsistencia', asistencia)
       } else {
         let asistencia = await asistenciaSocket.create({
-          persona: res._id,
           estado: '1',
           fechaSalida: null,
+          persona: res._id,
         })
         io.emit('createdAsistencia', asistencia)
+
       }
     } else {
       port.write('false')

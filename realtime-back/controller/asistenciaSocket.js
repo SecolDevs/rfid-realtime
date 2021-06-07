@@ -10,12 +10,23 @@ findId = async (id) => {
 }
 
 module.exports = {
+  list: async (estado) => {
+    try {
+      const asistencia = await Asistencia.find({ estado }).exec()
+      if (Object.keys(asistencia).length > 0) return asistencia
+      else return false
+    } catch (err) {
+      console.log(err)
+      return false
+    }
+  },
   findData: async (data) => {
     try {
       const asistencia = await Asistencia.find(data).exec()
       if (Object.keys(asistencia).length > 0) return asistencia[0]
       else return false
     } catch (err) {
+      console.log(err)
       return false
     }
   },
@@ -42,4 +53,5 @@ module.exports = {
       return { msg: `Error ${err}` }
     }
   },
+
 }
