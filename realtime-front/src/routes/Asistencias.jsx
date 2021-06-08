@@ -28,8 +28,10 @@ function Asistencias() {
   }, [socket]);
 
   return (
-    <div>
-      <h1>Dentro</h1>
+    <div className="container asis-pri">
+      <div className="col-9">
+        <h1>Dentro</h1>
+      </div>
       {loading ? (
         <h1>Cargando...</h1>
       ) : Object.keys(asistencias).length > 0 ? (
@@ -39,20 +41,33 @@ function Asistencias() {
       ) : (
         <h2>No hay asistencias</h2>
       )}
-      <h1>Historial</h1>
-      {loading ? (
-        <h1>Cargando...</h1>
-      ) : Object.keys(asistencias).length > 0 ? (
-        asistencias.map((asistencia) => (
-          <Asistencia
-            key={asistencia._id}
-            asistencia={asistencia}
-            historial={true}
-          />
-        ))
-      ) : (
-        <h2>No hay asistencias</h2>
-      )}
+      <div className="col-9">
+        <h1>Historial</h1>
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">NOMBRE</th>
+            <th scope="col">FECHA ENTRADA</th>
+            <th scope="col">FECHA SALIDA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            <h1>Cargando...</h1>
+          ) : Object.keys(asistencias).length > 0 ? (
+            asistencias.map((asistencia) => (
+              <Asistencia
+                key={asistencia._id}
+                asistencia={asistencia}
+                historial={true}
+              />
+            ))
+          ) : (
+            <h2>No hay asistencias</h2>
+          )}
+        </tbody>
+      </table>
     </div>
   );
 }
