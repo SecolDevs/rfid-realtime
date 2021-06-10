@@ -7,7 +7,7 @@ const personaSocket = require('./controller/personaSocket')
 const asistenciaSocket = require('./controller/asistenciaSocket')
 
 // Serial Port
-const port = new serialPort('COM3', { baudRate: 9600 })
+const port = new serialPort('COM5', { baudRate: 9600 })
 const parser = new serialPort.parsers.Readline()
 port.pipe(parser)
 
@@ -29,7 +29,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 4001
 
 app.get('/', (res) => {
   res.status(200).json({ msg: 'Conectado a la api' })
@@ -63,15 +63,14 @@ if (informacion) {
   //
   // ASISTENCIAS
 } else {
-  let conSocket = null
   io.on('connection', (socket) => {
     console.log('Alguien se ha conectado con Sockets', socket.id)
-    conSocket = socket
+    socket.on('disconnect', () => {
+      console.log('Socket Desconectado')
+    })
   })
 
   parser.on('data', async (line) => {
-
-
     line = line.trim()
     let res = await personaSocket.findTag(line.trim())
 
@@ -95,7 +94,6 @@ if (informacion) {
           persona: res._id,
         })
         io.emit('createdAsistencia', asistencia)
-
       }
     } else {
       port.write('false')

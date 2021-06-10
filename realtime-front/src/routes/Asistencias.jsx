@@ -1,31 +1,21 @@
-import React, { useContext, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { socket } from "../config/SocketConfig";
-import AsistenciaContext from "../context/AsistenciaContext";
-import Asistencia from "./asistencias/Asistencia";
+import React, { useContext, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+import { socket } from '../config/SocketConfig'
+import AsistenciaContext from '../context/AsistenciaContext'
+import Asistencia from './asistencias/Asistencia'
 
 function Asistencias() {
   // Context
-  const { asistencias, loading, asistenciasFn } = useContext(AsistenciaContext);
-  const { getAsistencias, addAsistencia, updateAsistencia } = asistenciasFn;
+  const { asistencias, loading, asistenciasFn } = useContext(AsistenciaContext)
+  const { getAsistencias } = asistenciasFn
 
-  const location = useLocation();
+  const location = useLocation()
 
   useEffect(() => {
-    if (location.pathname === "/asistencias") {
-      getAsistencias();
+    if (location.pathname === '/asistencias') {
+      getAsistencias()
     }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    socket.on("createdAsistencia", (asistencia) => {
-      addAsistencia(asistencia);
-    });
-
-    socket.on("updatedAsistencia", (asistencia) => {
-      updateAsistencia(asistencia);
-    });
-  }, [socket]);
+  }, [location.pathname])
 
   return (
     <div className="container asis-pri">
@@ -36,7 +26,11 @@ function Asistencias() {
         <h1>Cargando...</h1>
       ) : Object.keys(asistencias).length > 0 ? (
         asistencias.map((asistencia) => (
-          <Asistencia key={asistencia._id} asistencia={asistencia} />
+          <Asistencia
+            key={asistencia._id}
+            asistencia={asistencia}
+            historial={false}
+          />
         ))
       ) : (
         <h2>No hay asistencias</h2>
@@ -44,7 +38,7 @@ function Asistencias() {
       <div className="col-9">
         <h1>Historial</h1>
       </div>
-      <table class="table table-hover">
+      <table className="table table-hover">
         <thead>
           <tr>
             <th scope="col">NOMBRE</th>
@@ -64,12 +58,14 @@ function Asistencias() {
               />
             ))
           ) : (
-            <h2>No hay asistencias</h2>
+            <tr>
+              <td>No hay Asistencias</td>
+            </tr>
           )}
         </tbody>
       </table>
     </div>
-  );
+  )
 }
 
-export default Asistencias;
+export default Asistencias
